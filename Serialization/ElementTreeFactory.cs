@@ -23,6 +23,7 @@ namespace Serialization
                 {
                     var element = new CompositeElement();
                     element.Name = property.Name;
+                    element.IsCollection = true;
 
                     var enumerableProperty = property.GetValue(objectToSerialize, null) as IEnumerable;
                     foreach (var value in enumerableProperty)

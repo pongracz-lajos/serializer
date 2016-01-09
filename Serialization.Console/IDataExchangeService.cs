@@ -7,5 +7,7 @@
         string GetHeader(ICustomSerializable<T> serializableObject);
 
         string GetFull(ICustomSerializable<T> serializableObject);
+
+        string GetFullForExchange(ICustomSerializable<T> serializableObject);
     }
 }

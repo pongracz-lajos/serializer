@@ -1,27 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace Serialization.Xml
+namespace Serialization.Json
 {
-    class UnicodeXmlSerializer<T> : ISerializer<T>, IElementSerializer, IHasElementTreeFactory
+    class JsonSerializer<T> : ISerializer<T>, IElementSerializer, IHasElementTreeFactory
     {
         private Dictionary<string, string> aliases;
 
         private ICollection<string> ignoreList;
 
-        private List<List<string>> childXmlElements;
+        private List<List<string>> childJsonElements;
 
         private string result;
 
         public IElementTreeFactory TreeFactory { get; set; }
 
-        public UnicodeXmlSerializer()
+        public JsonSerializer()
         {
             TreeFactory = new ElementTreeFactory();
             ignoreList = new List<string>();
             aliases = new Dictionary<string, string>();
-            childXmlElements = new List<List<string>>();
-            childXmlElements.Add(new List<string>());
+            childJsonElements = new List<List<string>>();
+            childJsonElements.Add(new List<string>());
         }
 
         public ISerializer<T> Alias(string propertyName, string alias)
@@ -41,7 +41,7 @@ namespace Serialization.Xml
             var rootElement = TreeFactory.GetRootElement(objectToSerialize);
             rootElement.Accept(this);
 
-            return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + result;
+            return "{\n" + result + "\n}";
         }
 
         public bool PreSerializeElement(Element element)
@@ -61,7 +61,7 @@ namespace Serialization.Xml
                 return false;
             }
 
-            childXmlElements.Add(new List<string>());
+            childJsonElements.Add(new List<string>());
             return true;
         }
 
@@ -74,8 +74,8 @@ namespace Serialization.Xml
                 name = aliases[name];
             }
 
-            var xmlElement = string.Format("{0}<{1}>{2}</{1}>", Indentation() + "  ", name, element.Value);
-            childXmlElements[childXmlElements.Count - 1].Add(xmlElement);
+            var jsonElement = string.Format("{0}\"{1}\" : \"{2}\"", Indentation() + "  ", name, element.Value);
+            childJsonElements[childJsonElements.Count - 1].Add(jsonElement);
         }
 
         public void Serialize(CompositeElement compositeElement)
@@ -87,19 +87,29 @@ namespace Serialization.Xml
                 name = aliases[name];
             }
 
-            var childElements = childXmlElements[childXmlElements.Count - 1];
-            var xmlElement = string.Format("{0}<{1}>\n{2}\n{0}</{1}>", Indentation(), name, string.Join("\n", childElements));
-            childXmlElements.Remove(childElements);
-            childXmlElements[childXmlElements.Count - 1].Add(xmlElement);
+            var childElements = childJsonElements[childJsonElements.Count - 1];
+            var jsonElement = string.Empty;
 
-            result = xmlElement;
+            if (compositeElement.IsCollection)
+            {
+                jsonElement = string.Format("{0}\"{1}\" : [\n{2}\n{0}]", Indentation(), name, string.Join(",\n", childElements));
+            }
+            else
+            {
+                jsonElement = string.Format("{0}\"{1}\" : {{\n{2}\n{0}}}", Indentation(), name, string.Join(",\n", childElements));
+            }
+            
+            childJsonElements.Remove(childElements);
+            childJsonElements[childJsonElements.Count - 1].Add(jsonElement);
+
+            result = jsonElement;
         }
 
         private string Indentation()
         {
             StringBuilder builder = new StringBuilder();
 
-            for (int i = 1; i < childXmlElements.Count - 1; i++)
+            for (int i = 1; i < childJsonElements.Count; i++)
             {
                 builder.Append("  ");
             }

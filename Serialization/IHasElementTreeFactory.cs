@@ -1,6 +1,6 @@
 ﻿namespace Serialization
 {
-    interface IElementor
+    interface IHasElementTreeFactory
     {
         IElementTreeFactory TreeFactory { get; set; }
     }

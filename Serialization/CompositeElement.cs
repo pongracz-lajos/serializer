@@ -6,10 +6,13 @@ namespace Serialization
     {
         public string Name { get; set; }
 
+        public bool IsCollection { get; set; }
+
         public ICollection<IElement> ChildElements { get; set; }
 
         public CompositeElement()
         {
+            IsCollection = false;
             ChildElements = new List<IElement>();
         }
 
