@@ -12,6 +12,7 @@
             return serializer.Alias("Name", "Title")
                     .Ignore("Comments")
                     .Ignore("Date")
+                    .Ignore("Author")
                     .Serialize(blog);
         }
 
@@ -30,7 +31,7 @@
 
             return serializer.Alias("Name", "Title")
                     .Alias("CommentsItem", "Comment")
-                    .Alias("Date", "CreationDate")
+                    .Alias("Date", "PublicationDate")
                     .Serialize(blog);
         }
     }

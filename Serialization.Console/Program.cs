@@ -7,12 +7,17 @@ namespace Serialization.Console
     {
         static void Main(string[] args)
         {
+            Author author = new Author();
+            author.FullName = "Gang of Four";
+            author.Age = 22;
+
             Blog blog = new Blog();
             blog.Id = 1;
             blog.Name = "Design Patterns";
             blog.Comments.Add("Visitor pattern");
             blog.Comments.Add("Abstract factory pattern");
             blog.Comments.Add("Composite pattern");
+            blog.Author = author;
 
             ISerializerFactory serializerFactory = new UnicodeXmlSerializerFactory();
             var service = new BlogDataExchangeService();

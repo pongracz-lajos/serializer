@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Author.cs" />
     <Compile Include="Blog.cs" />
     <Compile Include="ICustomSerializable.cs" />
     <Compile Include="IDataExchangeService.cs" />

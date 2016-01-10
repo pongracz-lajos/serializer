@@ -11,6 +11,8 @@ namespace Serialization.Console
 
         public List<string> Comments { get; set; }
 
+        public Author Author { get; set; }
+
         public string Date { get; set; }
 
         public Blog()
